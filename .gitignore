@@ -1,0 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets & données locales
+.env
+photos/
+jobs/
+results/
+emails/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+autopub.log
+
+# Modèle de détection de visages (téléchargé au lancement)
+autopub/models/*.onnx

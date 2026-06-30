@@ -1,0 +1,33 @@
+[project]
+name = "auto-pub"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "opencv-python>=4.13.0.92",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+]
+
+[project.scripts]
+autopub = "autopub.app:main"
+autopub-admin = "autopub.admin:main"
+generate-email = "autopub.outreach:main"
+generate_prompts = "generate_prompts:main"
+generate_image = "generate_image:main"
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+packages = ["autopub", "autopub.pipeline", "autopub.channels"]
+py-modules = ["generate_prompts", "generate_image"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
