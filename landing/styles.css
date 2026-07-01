@@ -163,6 +163,28 @@ h2 { font-size: clamp(2.4rem, 6vw, 5rem); }
 .footer { display: flex; align-items: center; justify-content: space-between; padding: 30px clamp(20px, 6vw, 80px); border-top: 1px solid var(--line); }
 .footer-meta { color: var(--muted); font-size: 0.88rem; }
 
+/* Inscription / bêta */
+.signup { display: grid; place-items: center; min-height: 82vh; }
+.signup-inner { width: 100%; max-width: 480px; }
+.signup-eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--muted); margin-bottom: 1rem; }
+.signup h1 { font-size: clamp(2.6rem, 6vw, 4rem); margin-bottom: 1.2rem; }
+.signup-lede { font-size: clamp(1.05rem, 1.5vw, 1.2rem); color: var(--muted); margin-bottom: 2.6rem; max-width: 42ch; }
+.signup-lede em { color: var(--ink); font-style: italic; }
+.signup-form { display: flex; flex-direction: column; gap: 1.1rem; }
+.signup-form label { display: flex; flex-direction: column; gap: 0.4rem; }
+.signup-form label span { font-size: 0.82rem; font-weight: 500; color: var(--ink); }
+.signup-form label small { font-weight: 400; color: var(--muted); }
+.signup-form input, .signup-form textarea {
+  font-family: var(--sans); font-size: 1rem; color: var(--ink);
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: 0.75em 0.9em; width: 100%; transition: border-color 0.2s ease;
+}
+.signup-form input:focus, .signup-form textarea:focus { outline: none; border-color: var(--ink); }
+.signup-form textarea { resize: vertical; line-height: 1.45; }
+.signup-form .btn-block { margin-top: 0.6rem; }
+.signup-foot { text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+.signup-thanks .btn { margin-top: 0.6rem; }
+
 /* Responsive */
 @media (max-width: 900px) {
   .hero, .how, .price-inner { grid-template-columns: 1fr; }

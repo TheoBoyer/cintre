@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cintre · Rejoindre la bêta</title>
+  <meta name="description" content="cintre ouvre en bêta privée. Laisse ton email et le nom de ta boutique pour recevoir un accès et ton premier pack de visuels offert." />
+  <link rel="canonical" href="https://cintre.app/inscription/" />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#14110d" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <a class="wordmark" href="/">cintre</a>
+    <a href="/" class="btn btn-ghost">Retour</a>
+  </header>
+
+  <section class="signup">
+    <div class="signup-inner">
+      <p class="signup-eyebrow">Bêta privée</p>
+      <h1>Rejoins<br /><em>la bêta.</em></h1>
+      <p class="signup-lede">
+        cintre ouvre ses accès petit à petit. Laisse-nous tes coordonnées :
+        on te recontacte avec un accès et ton <em>premier pack offert</em>.
+      </p>
+
+      <!-- Soumissions collectées via Formspree (email + dashboard). -->
+      <form class="signup-form" action="https://formspree.io/f/xqevylrg" method="POST">
+        <input type="hidden" name="_subject" value="Nouveau lead bêta cintre" />
+        <input type="hidden" name="_next" value="https://cintre.app/inscription/merci/" />
+        <!-- anti-spam : les bots remplissent ce champ caché, pas les humains -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none" />
+
+        <label>
+          <span>Nom de la boutique</span>
+          <input type="text" name="boutique" required placeholder="Le Dressing" />
+        </label>
+        <label>
+          <span>Ville</span>
+          <input type="text" name="ville" placeholder="Chambéry" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" required placeholder="toi@taboutique.fr" />
+        </label>
+        <label>
+          <span>Ce que tu vends <small>(optionnel)</small></span>
+          <textarea name="produits" rows="3" placeholder="Prêt-à-porter femme, accessoires…"></textarea>
+        </label>
+
+        <button type="submit" class="btn btn-solid btn-block">Demander un accès</button>
+        <p class="signup-foot">Pas de carte demandée. On te recontacte par email.</p>
+      </form>
+    </div>
+  </section>
+
+</body>
+</html>
