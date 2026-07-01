@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 JOBS_DIR = ROOT / "jobs"
 DB_PATH = ROOT / "cintre.sqlite"
 DA_DIR = ROOT / "da"
+LANDING_DIR = ROOT / "landing"   # site vitrine statique servi par le serveur web
 
 # --- Marque par défaut ------------------------------------------------------
 # DA générique « assez bonne » pour n'importe quelle boutique. Une marque
@@ -72,6 +73,14 @@ INGRESS_DRAIN_SLEEP = 1.0     # pause quand l'inbox est vide (s)
 WHATSAPP_GRAPH_VERSION = "v21.0"
 WHATSAPP_WEBHOOK_HOST = "0.0.0.0"   # surchargé par WHATSAPP_WEBHOOK_HOST
 WHATSAPP_WEBHOOK_PORT = 8080        # surchargé par WHATSAPP_WEBHOOK_PORT
+
+# --- Serveur web / site vitrine ---------------------------------------------
+# `uv run cintre` sert aussi la landing statique (dossier LANDING_DIR) dans un
+# thread dédié. Ne touche pas la DB (fichiers seulement) → ThreadingHTTPServer.
+# Surchargé par CINTRE_WEB_HOST / CINTRE_WEB_PORT ; désactivable via CINTRE_WEB_DISABLE=1.
+WEB_ENABLED = True
+WEB_HOST = "0.0.0.0"                # écoute sur toutes les interfaces (accès VPS)
+WEB_PORT = 8000                     # http://<ip-vps>:8000 (80 = besoin des droits root)
 
 # --- Textes envoyés à l'utilisateur ----------------------------------------
 ACK_TEXT = "📸 Bien reçu ! Ton pack marketing arrive sous ~15 min."

@@ -9,6 +9,7 @@ propre connexion SQLite (les connexions ne se partagent pas entre threads).
 
 from __future__ import annotations
 
+import argparse
 import os
 import signal
 import sys
@@ -25,6 +26,7 @@ from .ingress import Ingress
 from .jobstore import JobStore
 from .logsetup import get_logger, setup_logging
 from .pipeline import anonymize
+from .web import StaticServer
 from .worker import Worker
 
 log = get_logger("app")
@@ -70,8 +72,26 @@ def build_channels() -> tuple[ChannelRegistry, list[Receiver]]:
     return senders, receivers
 
 
+def _parse_args() -> argparse.Namespace:
+    """Args CLI. Précédence : argument CLI > variable d'env > défaut config."""
+    parser = argparse.ArgumentParser(prog="cintre", description="Bot cintre + site vitrine.")
+    parser.add_argument(
+        "--web-host",
+        default=os.environ.get("CINTRE_WEB_HOST", config.WEB_HOST),
+        help=f"interface d'écoute du site vitrine (défaut : {config.WEB_HOST})",
+    )
+    parser.add_argument(
+        "--web-port",
+        type=int,
+        default=int(os.environ.get("CINTRE_WEB_PORT", config.WEB_PORT)),
+        help=f"port du site vitrine (défaut : {config.WEB_PORT})",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    load_dotenv()
+    load_dotenv()  # avant _parse_args : les défauts peuvent venir du .env
+    args = _parse_args()
     setup_logging()
     if not config.DEFAULT_DA_PATH.exists():
         raise SystemExit(f"DA par défaut introuvable : {config.DEFAULT_DA_PATH}")
@@ -115,6 +135,10 @@ def main() -> None:
     def _receiver_target(receiver: Receiver) -> None:
         receiver.run(db.connect(), stop)
 
+    def _web_target() -> None:
+        # Sert des fichiers uniquement (pas de DB) → pas de db.connect() ici.
+        StaticServer(args.web_host, args.web_port, config.LANDING_DIR).run(stop)
+
     threads = [
         threading.Thread(target=_ingress_target, name="ingress", daemon=True),
         threading.Thread(target=_worker_target, name="worker", daemon=True),
@@ -126,6 +150,8 @@ def main() -> None:
                 name=f"receiver-{receiver.name}", daemon=True,
             )
         )
+    if config.WEB_ENABLED and not os.environ.get("CINTRE_WEB_DISABLE"):
+        threads.append(threading.Thread(target=_web_target, name="web", daemon=True))
 
     log.info("cintre démarré. Jobs dans : %s", config.JOBS_DIR)
     log.info("Utilisateurs autorisés (seed) : %s", config.OWNER_USERS)
