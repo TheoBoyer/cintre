@@ -11,10 +11,10 @@ from pathlib import Path
 
 import pytest
 
-from autopub import brands, db
-from autopub.channels.base import Channel
-from autopub.channels.registry import ChannelRegistry
-from autopub.models import InboundMessage
+from cintre import brands, db
+from cintre.channels.base import Channel
+from cintre.channels.registry import ChannelRegistry
+from cintre.models import InboundMessage
 
 
 class FakeChannel(Channel):
@@ -59,7 +59,7 @@ def conn(tmp_path):
 
 @pytest.fixture
 def store(tmp_path):
-    from autopub.jobstore import JobStore
+    from cintre.jobstore import JobStore
 
     return JobStore(tmp_path / "jobs")
 
@@ -80,7 +80,7 @@ def registry(channel):
 def fake_pipeline(monkeypatch):
     """Remplace les appels claude/codex par des doubles déterministes.
     Retourne un compteur d'appels que les tests peuvent inspecter."""
-    from autopub.pipeline import runner
+    from cintre.pipeline import runner
 
     calls = {"prompts": 0, "images": 0}
     lock = threading.Lock()  # generate_image tourne en parallèle (pool de threads)

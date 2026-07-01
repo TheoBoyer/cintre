@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from autopub.pipeline.images import _parse_tokens
+from cintre.pipeline.images import _parse_tokens
 
 
 def test_parse_tokens_codex_format():

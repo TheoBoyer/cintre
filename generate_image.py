@@ -1,4 +1,4 @@
-"""Wrapper CLI mince autour de autopub.pipeline.images (debug manuel).
+"""Wrapper CLI mince autour de cintre.pipeline.images (debug manuel).
 
 Usage :
     uv run generate_image --ref photos/ref.jpg --prompt "..." --out results/P1.png
@@ -10,7 +10,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from autopub.pipeline.images import ImageGenError, generate_image
+from cintre.pipeline.images import ImageGenError, generate_image
 
 
 def read_prompt(args: argparse.Namespace) -> str:

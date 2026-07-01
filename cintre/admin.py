@@ -1,11 +1,11 @@
 """CLI d'administration : whitelist et marques.
 
 Exemples :
-    uv run python -m autopub.admin allow-user --channel telegram --user 856243729 --note owner
-    uv run python -m autopub.admin deny-user  --channel telegram --user 856243729
-    uv run python -m autopub.admin list-allowed
-    uv run python -m autopub.admin add-brand --slug ete --name "Été" --da da/ete.md --n 6
-    uv run python -m autopub.admin assign-user --channel telegram --user 856243729 --brand ete
+    uv run python -m cintre.admin allow-user --channel telegram --user 856243729 --note owner
+    uv run python -m cintre.admin deny-user  --channel telegram --user 856243729
+    uv run python -m cintre.admin list-allowed
+    uv run python -m cintre.admin add-brand --slug ete --name "Été" --da da/ete.md --n 6
+    uv run python -m cintre.admin assign-user --channel telegram --user 856243729 --brand ete
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from .models import Brand
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Administration auto-pub")
+    parser = argparse.ArgumentParser(description="Administration cintre")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("allow-user", help="Autoriser un utilisateur")

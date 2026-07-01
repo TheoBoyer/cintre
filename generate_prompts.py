@@ -1,4 +1,4 @@
-"""Wrapper CLI mince autour de autopub.pipeline.prompts (debug manuel).
+"""Wrapper CLI mince autour de cintre.pipeline.prompts (debug manuel).
 
 Usage :
     uv run generate_prompts photos/ref.jpg --da=da/fashion-mode.md --n=5
@@ -9,7 +9,7 @@ import json
 import sys
 from pathlib import Path
 
-from autopub.pipeline.prompts import PromptGenError, generate_prompts
+from cintre.pipeline.prompts import PromptGenError, generate_prompts
 
 
 def main() -> None:

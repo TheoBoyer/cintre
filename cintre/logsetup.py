@@ -1,7 +1,7 @@
 """Configuration du logging applicatif.
 
-Affiche sur stdout (visible quand on lance `uv run autopub`) et écrit aussi
-dans `autopub.log`. Niveau réglable via la variable d'env AUTOPUB_LOG_LEVEL
+Affiche sur stdout (visible quand on lance `uv run cintre`) et écrit aussi
+dans `cintre.log`. Niveau réglable via la variable d'env CINTRE_LOG_LEVEL
 (défaut INFO ; mettre DEBUG pour plus de détail).
 """
 
@@ -20,11 +20,11 @@ def setup_logging() -> None:
     global _CONFIGURED
     if _CONFIGURED:
         return
-    level = getattr(logging, os.environ.get("AUTOPUB_LOG_LEVEL", "INFO").upper(), logging.INFO)
+    level = getattr(logging, os.environ.get("CINTRE_LOG_LEVEL", "INFO").upper(), logging.INFO)
     fmt = "%(asctime)s %(levelname)-7s [%(threadName)s] %(name)s: %(message)s"
     datefmt = "%H:%M:%S"
 
-    root = logging.getLogger("autopub")
+    root = logging.getLogger("cintre")
     root.setLevel(level)
     root.handlers.clear()
 
@@ -33,7 +33,7 @@ def setup_logging() -> None:
     root.addHandler(stream)
 
     try:
-        fileh = logging.FileHandler(config.ROOT / "autopub.log", encoding="utf-8")
+        fileh = logging.FileHandler(config.ROOT / "cintre.log", encoding="utf-8")
         fileh.setFormatter(logging.Formatter(fmt, datefmt))
         root.addHandler(fileh)
     except OSError:
@@ -44,4 +44,4 @@ def setup_logging() -> None:
 
 
 def get_logger(name: str) -> logging.Logger:
-    return logging.getLogger(f"autopub.{name}")
+    return logging.getLogger(f"cintre.{name}")

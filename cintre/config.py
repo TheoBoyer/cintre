@@ -12,12 +12,12 @@ from pathlib import Path
 # --- Racine projet & chemins ------------------------------------------------
 ROOT = Path(__file__).resolve().parent.parent
 JOBS_DIR = ROOT / "jobs"
-DB_PATH = ROOT / "autopub.sqlite"
+DB_PATH = ROOT / "cintre.sqlite"
 DA_DIR = ROOT / "da"
 
 # --- Marque par défaut ------------------------------------------------------
 # DA générique « assez bonne » pour n'importe quelle boutique. Une marque
-# dédiée (ex. fashion-mode) peut être créée puis assignée via autopub-admin.
+# dédiée (ex. fashion-mode) peut être créée puis assignée via cintre-admin.
 DEFAULT_BRAND_ID = "generic"
 DEFAULT_BRAND_NAME = "Générique"
 DEFAULT_DA_PATH = DA_DIR / "generic.md"
@@ -25,10 +25,10 @@ DEFAULT_N_IMAGES = 3
 
 # --- Sécurité : whitelist ---------------------------------------------------
 # Comptes autorisés à envoyer des requêtes, seedés au démarrage.
-# Format : (channel, user_ref). Surchargé via la variable d'env AUTOPUB_OWNER
+# Format : (channel, user_ref). Surchargé via la variable d'env CINTRE_OWNER
 # (ex "telegram:856243729,telegram:123").
 def _owner_users() -> list[tuple[str, str]]:
-    raw = os.environ.get("AUTOPUB_OWNER", "telegram:856243729")
+    raw = os.environ.get("CINTRE_OWNER", "telegram:856243729")
     users: list[tuple[str, str]] = []
     for token in raw.split(","):
         token = token.strip()

@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from autopub import config, db
-from autopub.ingress import Ingress
-from autopub.models import JobStatus
-from autopub.pipeline import runner
-from autopub.worker import Worker
+from cintre import config, db
+from cintre.ingress import Ingress
+from cintre.models import JobStatus
+from cintre.pipeline import runner
+from cintre.worker import Worker
 
 from conftest import photo, text_msg
 

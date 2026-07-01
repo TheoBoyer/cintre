@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from autopub import config, db
-from autopub.models import Brand, JobStatus
+from cintre import config, db
+from cintre.models import Brand, JobStatus
 
 
 def test_whitelist(conn):

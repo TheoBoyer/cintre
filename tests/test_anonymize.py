@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from autopub.pipeline import anonymize
+from cintre.pipeline import anonymize
 
 
 def _solid(h=100, w=100, value=200):

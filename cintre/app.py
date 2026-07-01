@@ -1,7 +1,7 @@
 """Entrypoint : initialise la DB, seede, démarre ingress + worker.
 
 Lancement :
-    uv run python -m autopub.app
+    uv run python -m cintre.app
 
 Deux threads partagent la DB (WAL) et le système de fichiers, chacun avec sa
 propre connexion SQLite (les connexions ne se partagent pas entre threads).
@@ -85,7 +85,7 @@ def main() -> None:
     t_ingress = threading.Thread(target=_ingress_target, name="ingress", daemon=True)
     t_worker = threading.Thread(target=_worker_target, name="worker", daemon=True)
 
-    log.info("auto-pub démarré. Jobs dans : %s", config.JOBS_DIR)
+    log.info("cintre démarré. Jobs dans : %s", config.JOBS_DIR)
     log.info("Utilisateurs autorisés (seed) : %s", config.OWNER_USERS)
     log.info("Ingress + worker actifs. Ctrl+C pour arrêter.")
     t_ingress.start()

@@ -6,11 +6,11 @@ from __future__ import annotations
 import threading
 import time
 
-from autopub import brands, db
-from autopub.ingress import Ingress
-from autopub.jobstore import JobStore
-from autopub.models import JobStatus
-from autopub.worker import Worker
+from cintre import brands, db
+from cintre.ingress import Ingress
+from cintre.jobstore import JobStore
+from cintre.models import JobStatus
+from cintre.worker import Worker
 
 from conftest import FakeChannel, photo
 
@@ -26,7 +26,7 @@ def test_threads_each_own_connection(tmp_path, monkeypatch):
     store = JobStore(tmp_path / "jobs")
 
     # faux pipeline patché au niveau module (vu par le thread worker)
-    from autopub.pipeline import runner
+    from cintre.pipeline import runner
 
     monkeypatch.setattr(
         runner, "generate_prompts",
@@ -53,7 +53,7 @@ def test_threads_each_own_connection(tmp_path, monkeypatch):
 
     channel.poll = patched_poll
 
-    from autopub.channels.registry import ChannelRegistry
+    from cintre.channels.registry import ChannelRegistry
 
     stop = threading.Event()
 

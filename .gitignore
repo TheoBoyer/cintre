@@ -18,7 +18,7 @@ emails/
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
-autopub.log
+cintre.log
 
 # Modèle de détection de visages (téléchargé au lancement)
-autopub/models/*.onnx
+cintre/models/*.onnx

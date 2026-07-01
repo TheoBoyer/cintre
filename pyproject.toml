@@ -1,5 +1,5 @@
 [project]
-name = "auto-pub"
+name = "cintre"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -11,9 +11,9 @@ dependencies = [
 ]
 
 [project.scripts]
-autopub = "autopub.app:main"
-autopub-admin = "autopub.admin:main"
-generate-email = "autopub.outreach:main"
+cintre = "cintre.app:main"
+cintre-admin = "cintre.admin:main"
+generate-email = "cintre.outreach:main"
 generate_prompts = "generate_prompts:main"
 generate_image = "generate_image:main"
 
@@ -21,7 +21,7 @@ generate_image = "generate_image:main"
 package = true
 
 [tool.setuptools]
-packages = ["autopub", "autopub.pipeline", "autopub.channels"]
+packages = ["cintre", "cintre.pipeline", "cintre.channels"]
 py-modules = ["generate_prompts", "generate_image"]
 
 [dependency-groups]
