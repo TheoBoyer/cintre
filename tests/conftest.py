@@ -12,22 +12,19 @@ from pathlib import Path
 import pytest
 
 from cintre import brands, db
-from cintre.channels.base import Channel
+from cintre.channels.base import Sender
 from cintre.channels.registry import ChannelRegistry
 from cintre.models import InboundMessage
 
 
-class FakeChannel(Channel):
-    """Canal en mémoire : enregistre textes et albums, fabrique des médias bidon."""
+class FakeChannel(Sender):
+    """Sender en mémoire : enregistre textes et albums, fabrique des médias bidon."""
 
     name = "telegram"
 
     def __init__(self) -> None:
         self.texts: list[tuple[str, str]] = []
         self.albums = []
-
-    def poll(self, cursor):
-        return [], cursor
 
     def download_media(self, msg, dest):
         dest.parent.mkdir(parents=True, exist_ok=True)

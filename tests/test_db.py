@@ -62,6 +62,29 @@ def test_cursor(conn):
     assert db.get_cursor(conn, "telegram") == 99
 
 
+def test_inbox_enqueue_dedup_drain_consume(conn):
+    from conftest import photo
+
+    # premier enfilage : inséré ; redélivrance (même external_id) : ignorée
+    assert db.enqueue_inbound(conn, photo("856", 1), external_id="1") is True
+    assert db.enqueue_inbound(conn, photo("856", 1), external_id="1") is False
+    assert db.enqueue_inbound(conn, photo("856", 2), external_id="2") is True
+
+    rows = db.drain_inbox(conn, limit=10)
+    assert len(rows) == 2  # le doublon n'a pas créé de seconde ligne
+
+    # le payload se reconstruit en InboundMessage
+    import json
+    from cintre.models import InboundMessage
+
+    msg = InboundMessage(**json.loads(rows[0]["payload"]))
+    assert msg.channel == "telegram" and msg.user_ref == "856"
+
+    # une fois consommé, il ne ressort plus du drainage
+    db.mark_inbox_consumed(conn, rows[0]["id"])
+    assert len(db.drain_inbox(conn, limit=10)) == 1
+
+
 def test_recover_orphans_and_fail_exhausted(conn, monkeypatch):
     j = db.create_job(conn, "telegram", "1", config.DEFAULT_BRAND_ID, Path("da.md"), 6, Path("ref.jpg"))
     db.set_status(conn, j, JobStatus.QUEUED)

@@ -1,5 +1,8 @@
 """Vérifie que ingress + worker tournent dans de vrais threads, chacun avec sa
-propre connexion sqlite (régression du bug 'SQLite objects in another thread')."""
+propre connexion sqlite (régression du bug 'SQLite objects in another thread').
+
+L'ingress draine l'inbox : on y pré-enfile un message, puis on laisse les threads
+créer le job (ingress) et livrer l'album (worker)."""
 
 from __future__ import annotations
 
@@ -21,6 +24,8 @@ def test_threads_each_own_connection(tmp_path, monkeypatch):
     db.init_schema(boot)
     brands.seed_default_brand(boot)
     db.allow_user(boot, "telegram", "856", "owner")
+    # pré-enfile un message dans l'inbox : l'ingress le drainera dans son thread
+    db.enqueue_inbound(boot, photo("856", 1), external_id="1")
     boot.close()
 
     store = JobStore(tmp_path / "jobs")
@@ -43,28 +48,21 @@ def test_threads_each_own_connection(tmp_path, monkeypatch):
         lambda src, dst, method=None, pad=None, score_threshold=None: (dst.write_bytes(b"X"), 0)[1],
     )
 
-    # un canal partagé : l'ingress y injecte un message, le worker y livre
-    channel = FakeChannel()
-    channel.queue = [photo("856", 1)]
-
-    def patched_poll(cursor):
-        msgs, channel.queue = channel.queue, []
-        return msgs, cursor
-
-    channel.poll = patched_poll
-
+    # un sender partagé : l'ingress télécharge la référence, le worker y livre
     from cintre.channels.registry import ChannelRegistry
+
+    channel = FakeChannel()
+    registry = ChannelRegistry()
+    registry.register(channel)
 
     stop = threading.Event()
 
     def ingress_target():
-        ing = Ingress(db.connect(db_path), channel, store)
+        ing = Ingress(db.connect(db_path), registry, store)
         ing.run_forever(stop)
 
     def worker_target():
-        reg = ChannelRegistry()
-        reg.register(channel)
-        Worker(db.connect(db_path), store, reg, "w1").run_forever(stop)
+        Worker(db.connect(db_path), store, registry, "w1").run_forever(stop)
 
     ti = threading.Thread(target=ingress_target, daemon=True)
     tw = threading.Thread(target=worker_target, daemon=True)

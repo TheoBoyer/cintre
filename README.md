@@ -11,11 +11,15 @@ des **images mannequin** fidèles au vêtement, et renvoie le tout en **album**.
 Pipeline par job (UUID), auditable et reprenable après crash :
 
 ```
-photo Telegram → ingress (whitelist → marque → job)
-              → worker : anonymisation → prompts (claude) → images (codex, //) → livraison album
+photo (Telegram/WhatsApp) → receiver → inbox (SQLite)
+                          → ingress (whitelist → marque → job)
+                          → worker : anonymisation → prompts (claude) → images (codex, //) → livraison album
 ```
 
-- **UI-agnostique** : `cintre/channels/` (Telegram aujourd'hui ; WhatsApp/Discord/web demain).
+- **UI-agnostique** : `cintre/channels/` sépare `Sender` (sortant, uniforme) et
+  `Receiver` (entrant : Telegram *tire* en long-poll, WhatsApp est *poussé* par
+  webhook). Tout message atterrit dans la table `inbox`, drainée par un ingress
+  unique agnostique au canal. Ajouter un canal = un `Sender` + un `Receiver`.
 - **État** : SQLite (`cintre.sqlite`) + dossier par job (`jobs/<uuid>/` : référence, DA, prompts, images, logs, usage).
 - **Anonymisation** : visages masqués sur la référence avant tout appel modèle (YuNet, `cintre/models/`).
 - **Marques** : DA par utilisateur, repli sur une DA générique (`da/generic.md`).
@@ -35,6 +39,15 @@ Copier `.env.example` vers `.env` :
 ```
 TELEGRAM_BOT_TOKEN=...
 ```
+
+**WhatsApp (optionnel, Meta Cloud API).** Renseigner `WHATSAPP_TOKEN`,
+`WHATSAPP_PHONE_NUMBER_ID` et `WHATSAPP_VERIFY_TOKEN` (+ `WHATSAPP_APP_SECRET`
+recommandé) active le canal au démarrage. Le webhook écoute sur
+`WHATSAPP_WEBHOOK_PORT` (8080 par défaut) et **doit être exposé en HTTPS** pour
+Meta : en dev, un tunnel (`cloudflared`/`ngrok`) ; en prod, un reverse-proxy.
+Configurer l'URL `https://.../webhook` et le *verify token* côté Meta. La whitelist
+identifie l'utilisateur par son numéro : `cintre-admin allow-user --channel whatsapp
+--user <numéro E.164 sans +>`.
 
 ## Lancer
 

@@ -1,26 +1,27 @@
-"""Registre des canaux : name -> instance Channel.
+"""Registre des senders : name -> instance Sender.
 
-Permet à la livraison de reconstruire le bon canal depuis `job.channel` lu en
-DB, sans dépendre de la socket d'origine. Ajouter un canal = une ligne ici.
+Permet à la livraison (worker/runner) et à l'ingress de reconstruire le bon
+`Sender` depuis `job.channel` / `msg.channel`, sans dépendre de la socket
+d'origine. Ajouter un canal = enregistrer son Sender ici.
 """
 
 from __future__ import annotations
 
-from .base import Channel
+from .base import Sender
 
 
 class ChannelRegistry:
     def __init__(self) -> None:
-        self._channels: dict[str, Channel] = {}
+        self._senders: dict[str, Sender] = {}
 
-    def register(self, channel: Channel) -> None:
-        self._channels[channel.name] = channel
+    def register(self, sender: Sender) -> None:
+        self._senders[sender.name] = sender
 
-    def get(self, name: str) -> Channel:
+    def get(self, name: str) -> Sender:
         try:
-            return self._channels[name]
+            return self._senders[name]
         except KeyError as exc:
             raise KeyError(f"canal inconnu : {name!r}") from exc
 
-    def all(self) -> list[Channel]:
-        return list(self._channels.values())
+    def all(self) -> list[Sender]:
+        return list(self._senders.values())

@@ -15,16 +15,16 @@ def _allow(conn, uid="856"):
     db.allow_user(conn, "telegram", uid, "owner")
 
 
-def test_unauthorized_ignored(conn, channel, store):
-    ing = Ingress(conn, channel, store)
+def test_unauthorized_ignored(conn, channel, store, registry):
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("999", 1))
     assert db.active_job_for_user(conn, "telegram", "999") is None
     assert channel.texts == []  # DENY_TEXT par défaut = None
 
 
-def test_authorized_photo_creates_job_and_acks(conn, channel, store):
+def test_authorized_photo_creates_job_and_acks(conn, channel, store, registry):
     _allow(conn)
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("856", 2))
     job = db.active_job_for_user(conn, "telegram", "856")
     assert job and job.status == JobStatus.QUEUED
@@ -36,7 +36,7 @@ def test_authorized_photo_creates_job_and_acks(conn, channel, store):
 
 def test_caption_saved_and_passed_to_prompts(conn, channel, store, registry, monkeypatch):
     _allow(conn)
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     msg = photo("856", 2)
     msg = msg.__class__(**{**msg.__dict__, "caption": "la fille de gauche porte la robe"})
     ing._handle(msg)
@@ -67,16 +67,16 @@ def test_caption_saved_and_passed_to_prompts(conn, channel, store, registry, mon
     assert seen["note"] == "la fille de gauche porte la robe"
 
 
-def test_non_photo_prompts_for_photo(conn, channel, store):
+def test_non_photo_prompts_for_photo(conn, channel, store, registry):
     _allow(conn)
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(text_msg("856", 1))
     assert channel.texts[-1] == ("856", config.NEED_PHOTO_TEXT)
 
 
-def test_reject_and_album_dedup(conn, channel, store):
+def test_reject_and_album_dedup(conn, channel, store, registry):
     _allow(conn)
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("856", 2))  # crée le job
     n_after_ack = len(channel.texts)
     ing._handle(photo("856", 3))  # rejet simple
@@ -90,7 +90,7 @@ def test_reject_and_album_dedup(conn, channel, store):
 
 def test_worker_delivers_album(conn, channel, store, registry, fake_pipeline):
     _allow(conn)
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("856", 2))
     job = db.active_job_for_user(conn, "telegram", "856")
 
@@ -139,7 +139,7 @@ def test_images_run_in_parallel(conn, channel, store, registry, monkeypatch):
 
     monkeypatch.setattr(runner, "generate_image", fake_image)
 
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("856", 2))
     job = db.active_job_for_user(conn, "telegram", "856")
     claimed = db.claim_next_job(conn, "w1")
@@ -149,7 +149,7 @@ def test_images_run_in_parallel(conn, channel, store, registry, monkeypatch):
 
 def test_resume_skips_done_work(conn, channel, store, registry, fake_pipeline):
     _allow(conn)
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("856", 2))
     job = db.active_job_for_user(conn, "telegram", "856")
     claimed = db.claim_next_job(conn, "w1")
@@ -180,7 +180,7 @@ def test_failure_after_retries_notifies_and_unblocks(conn, channel, store, regis
 
     monkeypatch.setattr(runner, "generate_image", boom)
 
-    ing = Ingress(conn, channel, store)
+    ing = Ingress(conn, registry, store)
     ing._handle(photo("856", 2))
     job = db.active_job_for_user(conn, "telegram", "856")
 

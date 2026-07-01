@@ -1,78 +1,35 @@
-"""Adaptateur Telegram (long-polling + sendMediaGroup).
+"""Adaptateur Telegram : Sender (sendMediaGroup) + Receiver (long-polling).
 
-Port des primitives de l'ancien main.py, avec en plus la normalisation vers
-`InboundMessage` (photo vs document, media_group_id) et la livraison en album.
+Le Receiver tire les updates via getUpdates et les pousse dans l'inbox ; le
+curseur `channel_cursor` sert d'offset d'acquittement (Telegram cesse de
+redélivrer une fois l'offset avancé). Le Sender livre album/texte et télécharge
+la référence.
 """
 
 from __future__ import annotations
 
 import json
+import sqlite3
+import threading
 import time
 from pathlib import Path
 
 import requests
 
-from .. import config
+from .. import config, db
 from ..logsetup import get_logger
 from ..models import InboundMessage, OutboundAlbum
-from .base import Channel
+from .base import Receiver, Sender
 
 log = get_logger("telegram")
 
 
-class TelegramChannel(Channel):
+class TelegramSender(Sender):
     name = "telegram"
 
     def __init__(self, token: str) -> None:
         self.token = token
         self.api = f"https://api.telegram.org/bot{token}"
-
-    # --- Ingestion ----------------------------------------------------------
-    def poll(self, cursor: int) -> tuple[list[InboundMessage], int]:
-        """Long-poll getUpdates. `cursor` = dernier update_id traité.
-        Telegram acquitte via offset = cursor + 1.
-
-        Les coupures réseau (reset de connexion en attente, timeouts) sont
-        normales avec le long-polling : on les avale en silence (niveau debug)
-        et on rend une liste vide — la boucle ingress réessaiera."""
-        try:
-            resp = requests.get(
-                f"{self.api}/getUpdates",
-                params={"offset": cursor + 1, "timeout": config.INGRESS_POLL_TIMEOUT},
-                timeout=config.INGRESS_POLL_TIMEOUT + 10,
-            )
-            resp.raise_for_status()
-            updates = resp.json()["result"]
-        except requests.RequestException as exc:
-            log.debug("poll réseau interrompu (normal en long-poll) : %s", exc)
-            time.sleep(3)  # léger backoff pour ne pas boucler en cas de panne réelle
-            return [], cursor
-
-        messages: list[InboundMessage] = []
-        new_cursor = cursor
-        for update in updates:
-            new_cursor = max(new_cursor, update["update_id"])
-            msg = self._to_inbound(update)
-            if msg is not None:
-                messages.append(msg)
-        return messages, new_cursor
-
-    def _to_inbound(self, update: dict) -> InboundMessage | None:
-        message = update.get("message") or update.get("channel_post")
-        if not message:
-            return None
-        chat = message.get("chat")
-        if not chat:
-            return None
-        return InboundMessage(
-            channel=self.name,
-            user_ref=str(chat["id"]),
-            update_id=update["update_id"],
-            media_group_id=message.get("media_group_id"),
-            media_file_id=_extract_photo_file_id(message),
-            raw=update,
-            caption=(message.get("caption") or message.get("text")),
-        )
 
     def download_media(self, msg: InboundMessage, dest: Path) -> None:
         if not msg.media_file_id:
@@ -90,7 +47,6 @@ class TelegramChannel(Channel):
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
 
-    # --- Sortie -------------------------------------------------------------
     def send_text(self, user_ref: str, text: str) -> None:
         try:
             requests.post(
@@ -127,6 +83,72 @@ class TelegramChannel(Channel):
             finally:
                 for fh in files.values():
                     fh.close()
+
+
+class TelegramReceiver(Receiver):
+    name = "telegram"
+
+    def __init__(self, token: str) -> None:
+        self.api = f"https://api.telegram.org/bot{token}"
+
+    def run(self, conn: sqlite3.Connection, stop: threading.Event) -> None:
+        log.info("receiver Telegram démarré (long-poll)")
+        while not stop.is_set():
+            try:
+                self._poll_once(conn)
+            except Exception as exc:  # réseau, API… on log et on retente
+                db.log_event(conn, None, "receiver", f"telegram poll error: {exc}")
+                log.warning("erreur de poll : %s", exc)
+                time.sleep(3)
+
+    def _poll_once(self, conn: sqlite3.Connection) -> None:
+        """Long-poll getUpdates. Le curseur = dernier update_id acquitté ;
+        l'offset avance après enfilage dans l'inbox (durable), donc une coupure
+        entre enqueue et set_cursor est idempotente : la redélivrance est
+        dédupliquée par (channel, external_id)."""
+        cursor = db.get_cursor(conn, self.name)
+        try:
+            resp = requests.get(
+                f"{self.api}/getUpdates",
+                params={"offset": cursor + 1, "timeout": config.INGRESS_POLL_TIMEOUT},
+                timeout=config.INGRESS_POLL_TIMEOUT + 10,
+            )
+            resp.raise_for_status()
+            updates = resp.json()["result"]
+        except requests.RequestException as exc:
+            log.debug("poll réseau interrompu (normal en long-poll) : %s", exc)
+            time.sleep(3)  # léger backoff pour ne pas boucler en cas de panne réelle
+            return
+
+        new_cursor = cursor
+        n_enqueued = 0
+        for update in updates:
+            new_cursor = max(new_cursor, update["update_id"])
+            msg = self._to_inbound(update)
+            if msg is not None:
+                if db.enqueue_inbound(conn, msg, external_id=str(update["update_id"])):
+                    n_enqueued += 1
+        if n_enqueued:
+            log.info("%d message(s) enfilé(s)", n_enqueued)
+        if new_cursor != cursor:
+            db.set_cursor(conn, self.name, new_cursor)
+
+    def _to_inbound(self, update: dict) -> InboundMessage | None:
+        message = update.get("message") or update.get("channel_post")
+        if not message:
+            return None
+        chat = message.get("chat")
+        if not chat:
+            return None
+        return InboundMessage(
+            channel=self.name,
+            user_ref=str(chat["id"]),
+            update_id=update["update_id"],
+            media_group_id=message.get("media_group_id"),
+            media_file_id=_extract_photo_file_id(message),
+            raw=update,
+            caption=(message.get("caption") or message.get("text")),
+        )
 
 
 def _extract_photo_file_id(message: dict) -> str | None:

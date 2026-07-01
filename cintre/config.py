@@ -62,6 +62,17 @@ MAX_ATTEMPTS = 2              # tentatives avant échec définitif d'un job
 WORKER_IDLE_SLEEP = 2.0       # pause de la boucle worker quand la file est vide
 INGRESS_POLL_TIMEOUT = 30     # long-poll Telegram (s)
 
+# --- Ingress / inbox --------------------------------------------------------
+INGRESS_DRAIN_BATCH = 50      # nombre de messages drainés par tour
+INGRESS_DRAIN_SLEEP = 1.0     # pause quand l'inbox est vide (s)
+
+# --- WhatsApp (Meta Cloud API) ----------------------------------------------
+# Secrets lus depuis l'environnement au démarrage (cf. app.py) : WHATSAPP_TOKEN,
+# WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_VERIFY_TOKEN, WHATSAPP_APP_SECRET.
+WHATSAPP_GRAPH_VERSION = "v21.0"
+WHATSAPP_WEBHOOK_HOST = "0.0.0.0"   # surchargé par WHATSAPP_WEBHOOK_HOST
+WHATSAPP_WEBHOOK_PORT = 8080        # surchargé par WHATSAPP_WEBHOOK_PORT
+
 # --- Textes envoyés à l'utilisateur ----------------------------------------
 ACK_TEXT = "📸 Bien reçu ! Ton pack marketing arrive sous ~15 min."
 REJECT_TEXT = "⏳ Tu as déjà une demande en cours — celle-ci est ignorée. Patiente jusqu'à la livraison."

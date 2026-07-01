@@ -7,13 +7,15 @@ explicite. WAL permet au thread ingress de lire pendant que le worker écrit.
 
 from __future__ import annotations
 
+import json
 import sqlite3
 import uuid
+from dataclasses import asdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import config
-from .models import Brand, Job, JobStatus, TERMINAL_STATUSES
+from .models import Brand, InboundMessage, Job, JobStatus, TERMINAL_STATUSES
 
 
 def now_iso() -> str:
@@ -97,6 +99,21 @@ CREATE TABLE IF NOT EXISTS channel_cursor (
   channel        TEXT PRIMARY KEY,
   last_update_id INTEGER NOT NULL DEFAULT 0
 );
+
+-- File d'entrée unifiée : tout message reçu (Telegram long-poll, webhook
+-- WhatsApp…) atterrit ici d'abord, puis l'ingress unique la draine. L'unicité
+-- (channel, external_id) déduplique les redélivraisons (retries webhook, replays
+-- long-poll avant ack).
+CREATE TABLE IF NOT EXISTS inbox (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel      TEXT NOT NULL,
+  external_id  TEXT NOT NULL,
+  payload      TEXT NOT NULL,
+  received_at  TEXT NOT NULL,
+  consumed_at  TEXT,
+  UNIQUE (channel, external_id)
+);
+CREATE INDEX IF NOT EXISTS ix_inbox_unconsumed ON inbox (id) WHERE consumed_at IS NULL;
 """
 
 
@@ -348,6 +365,30 @@ def set_cursor(conn: sqlite3.Connection, channel: str, last_update_id: int) -> N
            ON CONFLICT(channel) DO UPDATE SET last_update_id=excluded.last_update_id""",
         (channel, last_update_id),
     )
+
+
+# --- Inbox unifiée ----------------------------------------------------------
+def enqueue_inbound(conn: sqlite3.Connection, msg: InboundMessage, external_id: str) -> bool:
+    """Enfile un message normalisé. Retourne True si inséré, False si c'était un
+    doublon (même (channel, external_id) déjà présent) — dédup des redélivraisons."""
+    cur = conn.execute(
+        """INSERT OR IGNORE INTO inbox (channel, external_id, payload, received_at)
+           VALUES (?,?,?,?)""",
+        (msg.channel, external_id, json.dumps(asdict(msg)), now_iso()),
+    )
+    return cur.rowcount > 0
+
+
+def drain_inbox(conn: sqlite3.Connection, limit: int) -> list[sqlite3.Row]:
+    """Renvoie les messages non consommés, dans l'ordre d'arrivée."""
+    return conn.execute(
+        "SELECT id, payload FROM inbox WHERE consumed_at IS NULL ORDER BY id LIMIT ?",
+        (limit,),
+    ).fetchall()
+
+
+def mark_inbox_consumed(conn: sqlite3.Connection, inbox_id: int) -> None:
+    conn.execute("UPDATE inbox SET consumed_at=? WHERE id=?", (now_iso(), inbox_id))
 
 
 def _row_to_job(row: sqlite3.Row) -> Job:
