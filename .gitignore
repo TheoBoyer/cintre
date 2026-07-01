@@ -15,6 +15,7 @@ photos/
 jobs/
 results/
 emails/
+archives/
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
