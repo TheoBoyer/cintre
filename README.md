@@ -84,3 +84,33 @@ uv run pytest                  # sans crédits API (pipeline mocké)
 - `IMAGE_CONCURRENCY` : génération d'images en parallèle (3)
 - `ANONYMIZE_METHOD` : `black` (défaut) / `blur` / `pixelate`
 - `OWNER_USERS` : whitelist initiale (env `CINTRE_OWNER`)
+
+## Mise en prod — reste à faire
+
+Infra de base en place : **VPS + Cloudflare (HTTPS)**, service `cintre` déployé, landing servie.
+
+### Canal WhatsApp (code prêt, démarche Meta restante)
+- [ ] App *Meta for Developers* + *WhatsApp Business Account* créés
+- [ ] **Business verification** Meta validée (SIREN / justificatifs — délai de plusieurs jours)
+- [ ] Token permanent (System User), `WHATSAPP_PHONE_NUMBER_ID` récupérés
+- [ ] `.env` prod renseigné : `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET`
+- [ ] Webhook `https://.../webhook` déclaré côté Meta + verify token vérifié
+- [ ] Stratégie de contact validée vs. règles Meta (pas de démarchage à froid ; sinon *templates* pré-approuvés)
+
+### Identité & présence
+- [ ] Logo finalisé (en cours) puis propagé : og-image, apple-touch-icon, avatars des bots
+- [ ] Compte Instagram créé (bio + lien cintre.app + premiers before/after)
+- [ ] Backlinks : annuaires (Product Hunt, BetaList…), réseaux, articles
+
+### Juridique / RGPD (au moment de l'inscription & du traitement des photos)
+La landing statique ne collecte quasi rien ; le sujet RGPD se joue à l'onboarding
+du commerçant et au traitement des photos (données perso + visages).
+- [ ] Message/écran de consentement à l'inscription (finalité, base légale)
+- [ ] Politique de confidentialité accessible (anonymisation, rétention & suppression des jobs)
+- [ ] Politique de rétention des `jobs/` (durée, purge)
+
+### Exploitation
+- [ ] Sauvegarde planifiée de `cintre.sqlite` + `jobs/`
+- [ ] Monitoring / alerting (échec de job, `claude`/`codex` déconnectés)
+- [ ] `claude` et `codex` authentifiés sur le VPS + suivi de conso (agrégation des `usage.json`)
+- [ ] Modèle de pricing / facturation décidé (onboarding manuel via `cintre-admin` en bêta)

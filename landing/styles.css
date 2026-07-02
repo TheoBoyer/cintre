@@ -28,7 +28,9 @@ h2 { font-size: clamp(2.4rem, 6vw, 5rem); }
 .wordmark {
   font-family: var(--serif); font-size: 1.5rem; font-weight: 500;
   letter-spacing: -0.02em; color: var(--ink); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.42em;
 }
+.brand-mark { height: 0.78em; width: auto; flex: none; }
 
 /* Buttons */
 .btn {
@@ -113,6 +115,7 @@ h2 { font-size: clamp(2.4rem, 6vw, 5rem); }
 }
 .phone-top { display: flex; align-items: center; gap: 10px; background: #1f2c33; border-radius: 26px 26px 8px 8px; padding: 14px 16px; color: #fff; }
 .phone-avatar { width: 34px; height: 34px; border-radius: 50%; background: #3b4a52; display: grid; place-items: center; font-family: var(--serif); font-size: 1.1rem; color: #fff; }
+.phone-avatar svg { width: 18px; height: auto; }
 .phone-top strong { display: block; font-size: 0.9rem; }
 .phone-top small { color: #8fa3ad; font-size: 0.72rem; }
 .chat { background: #0b141a; padding: 16px 12px; display: flex; flex-direction: column; gap: 10px; border-radius: 8px 8px 26px 26px; }
@@ -162,6 +165,9 @@ h2 { font-size: clamp(2.4rem, 6vw, 5rem); }
 /* Footer */
 .footer { display: flex; align-items: center; justify-content: space-between; padding: 30px clamp(20px, 6vw, 80px); border-top: 1px solid var(--line); }
 .footer-meta { color: var(--muted); font-size: 0.88rem; }
+.footer-right { display: flex; align-items: center; gap: 16px; }
+.footer-social { display: inline-flex; color: var(--muted); transition: color 0.15s ease; }
+.footer-social:hover { color: var(--ink); }
 
 /* Inscription / bêta */
 .signup { display: grid; place-items: center; min-height: 82vh; }
