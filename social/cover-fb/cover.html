@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f5f2ec; --ink: #14110d; --muted: #857c70;
+          --serif: "Fraunces", Georgia, serif; --sans: "Inter", system-ui, sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #333; font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .cover { width: 1230px; height: 468px; background: var(--bg); color: var(--ink);
+           position: relative; overflow: hidden; display: flex; align-items: center;
+           justify-content: center; gap: 44px; padding: 0 60px; }
+
+  /* wordmark en haut à gauche, comme la landing */
+  .brand { position: absolute; top: 30px; left: 50px; display: flex; align-items: center; gap: 12px;
+           font-family: var(--serif); font-size: 30px; font-weight: 500; letter-spacing: -0.02em; }
+  .brand svg { width: 36px; height: 36px; }
+
+  /* copie */
+  .copy { flex: 0 0 360px; }
+  .copy h1 { font-family: var(--serif); font-weight: 400; font-size: 66px; line-height: 0.98; letter-spacing: -0.02em; }
+  .copy h1 em { font-weight: 300; font-style: italic; }
+  .copy .sub { font-size: 24px; line-height: 1.45; color: var(--muted); margin-top: 22px; max-width: 20ch; }
+
+  /* figure : polaroïd → flèche → pack */
+  .fig { display: flex; align-items: center; gap: 34px; }
+  .polaroid { position: relative; transform: rotate(-3deg); background: #fff; padding: 12px;
+              border-radius: 5px; box-shadow: 0 26px 50px -24px rgba(20,17,13,0.45); }
+  .polaroid img { display: block; width: 210px; height: 300px; object-fit: cover; border-radius: 3px; }
+  .arrow { font-family: var(--serif); font-size: 46px; color: var(--muted); }
+  .pack { position: relative; display: flex; gap: 8px; align-items: flex-start; }
+  .pack .main { height: 340px; width: auto; border-radius: 4px; }
+  .pack .col { display: flex; flex-direction: column; gap: 8px; }
+  .pack .col img { height: 166px; width: auto; border-radius: 4px; }
+  .badge { position: absolute; background: var(--ink); color: var(--bg); font-size: 15px; font-weight: 600;
+           letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px; border-radius: 999px; }
+  .polaroid .badge { left: 14px; bottom: 14px; }
+  .pack .badge { left: 12px; bottom: 12px; }
+</style>
+</head>
+<body>
+<section class="cover" role="img" aria-label="cover">
+  <span class="brand">
+    <svg viewBox="18 37 87 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+    cintre
+  </span>
+
+  <div class="copy">
+    <h1>Une&nbsp;photo.<br><em>Un&nbsp;shooting.</em></h1>
+    <p class="sub">Envoie la photo d'un produit sur WhatsApp. Reçois un pack digne d'un studio.</p>
+  </div>
+
+  <div class="fig">
+    <figure class="polaroid">
+      <img src="file:///home/medulle/cintre/landing/assets/hero-before.webp" alt="" />
+      <span class="badge">Ta photo</span>
+    </figure>
+    <span class="arrow">→</span>
+    <div class="pack">
+      <img class="main" src="file:///home/medulle/cintre/landing/assets/pack-1.webp" alt="" />
+      <div class="col">
+        <img src="file:///home/medulle/cintre/landing/assets/pack-2.webp" alt="" />
+        <img src="file:///home/medulle/cintre/landing/assets/pack-3.webp" alt="" />
+      </div>
+      <span class="badge">Ton pack</span>
+    </div>
+  </div>
+</section>
+</body>
+</html>

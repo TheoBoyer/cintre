@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f2ec; --ink: #14110d; --muted: #857c70; --line: #e2dcd0;
+    --serif: "Fraunces", Georgia, serif; --sans: "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #333; font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .slide { width: 1080px; height: 1350px; background: var(--bg); color: var(--ink);
+           position: relative; overflow: hidden; display: flex; flex-direction: column; }
+
+  .mark { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 40px; font-weight: 500; letter-spacing: -0.02em; }
+  .mark svg { width: 46px; height: 46px; }
+  .topbar { position: absolute; top: 64px; left: 72px; right: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .swipe { font-size: 22px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; line-height: 0.96; font-size: 108px; }
+  h1 em { font-weight: 300; font-style: italic; }
+  .lede { font-size: 34px; line-height: 1.5; color: var(--muted); max-width: 24ch; margin-top: 30px; }
+
+  /* SLIDE 1 — conversation WhatsApp plein écran */
+  .wa { padding: 0; }
+  .wa-header { display: flex; align-items: center; gap: 22px; padding: 30px 44px; background: #fff;
+               box-shadow: 0 1px 0 rgba(0,0,0,0.06); position: relative; z-index: 2; }
+  .wa-header .av { width: 88px; height: 88px; border-radius: 50%; background: var(--ink);
+                   display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .wa-header .av svg { width: 52px; height: 52px; }
+  .wa-header .id b { display: block; font-size: 38px; font-weight: 600; letter-spacing: -0.01em; }
+  .wa-header .id span { font-size: 26px; color: #12a150; }
+  .wa-body { flex: 1; background: #e7ddd3; padding: 40px 44px; display: flex; flex-direction: column;
+             justify-content: center; gap: 24px; overflow: hidden; }
+  .bubble { max-width: 82%; padding: 22px 26px; font-size: 32px; line-height: 1.4; border-radius: 26px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+  .out { align-self: flex-end; background: #d9fdd3; border-bottom-right-radius: 8px; }
+  .out .thumb { display: block; width: 440px; height: 275px; object-fit: cover; border-radius: 16px; margin-bottom: 12px; }
+  .out .cap { color: #2f4a2e; }
+  .in { align-self: flex-start; background: #fff; border-bottom-left-radius: 8px; }
+  .album { padding: 14px; }
+  .album .pack { display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: 1fr 1fr;
+                 gap: 8px; width: 420px; height: 320px; border-radius: 14px; overflow: hidden; }
+  .album .pack img { width: 100%; height: 100%; min-height: 0; min-width: 0; object-fit: cover; }
+  .album .pack .main { grid-row: 1 / 3; }
+  .album .cap { display: block; padding: 16px 12px 4px; font-size: 30px; color: var(--ink); }
+  .time { display: block; font-size: 22px; color: #8a9a86; margin-top: 6px; text-align: right; }
+  .in .time, .album .time { color: var(--muted); }
+  .wa-input { display: flex; align-items: center; gap: 20px; padding: 26px 44px 32px; background: #e7ddd3; }
+  .wa-input .box { flex: 1; background: #fff; border-radius: 999px; padding: 24px 32px; font-size: 30px; color: #9aa0a6; }
+  .wa-input .mic { width: 76px; height: 76px; border-radius: 50%; background: #12a150; flex: 0 0 auto;
+                   display: flex; align-items: center; justify-content: center; }
+  .wa-input .mic svg { width: 38px; height: 38px; }
+
+  /* SLIDE 2 — 3 étapes */
+  .s2 { padding: 150px 72px 110px; justify-content: center; }
+  .steps { margin-top: 80px; display: flex; flex-direction: column; gap: 68px; }
+  .step { display: flex; gap: 34px; align-items: flex-start; }
+  .step .no { font-family: var(--serif); font-weight: 300; font-size: 88px; line-height: 0.9; color: var(--ink); min-width: 120px; }
+  .step .tx { padding-top: 12px; }
+  .step .tx b { font-weight: 500; font-size: 40px; }
+  .step .tx p { font-size: 30px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+
+  /* SLIDE 3 — CTA */
+  .s3 { background: var(--ink); color: var(--bg); align-items: center; justify-content: center; text-align: center; padding: 72px; }
+  .s3 .mark { color: var(--bg); font-size: 56px; margin-bottom: 60px; }
+  .s3 .mark svg { width: 64px; height: 64px; }
+  .s3 h2 { font-family: var(--serif); font-weight: 400; font-size: 92px; line-height: 1.02; letter-spacing: -0.02em; }
+  .s3 h2 em { font-weight: 300; font-style: italic; }
+  .s3 .sub { font-size: 34px; color: #c8c0b4; margin-top: 44px; }
+  .s3 .offer { margin-top: 72px; border: 1px solid rgba(245,242,236,0.28); border-radius: 999px;
+               padding: 20px 40px; font-size: 28px; font-weight: 500; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 — conversation WhatsApp -->
+<section class="slide wa" role="img" aria-label="slide1">
+  <div class="wa-header">
+    <span class="av">
+      <svg viewBox="18 37 87 48" fill="none" stroke="#f5f2ec" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+    </span>
+    <span class="id"><b>cintre</b><span>en ligne</span></span>
+  </div>
+  <div class="wa-body">
+    <div class="bubble out">
+      <img class="thumb" src="file:///home/medulle/cintre/landing/assets/demo-src.webp" alt="" />
+      <span class="cap">la robe noire, photo studio</span>
+      <span class="time">10:24 ✓✓</span>
+    </div>
+    <div class="bubble in">
+      📸 Bien reçu&nbsp;! Ton pack arrive sous ~15&nbsp;min.
+      <span class="time">10:26</span>
+    </div>
+    <div class="bubble in album">
+      <div class="pack">
+        <img class="main" src="file:///home/medulle/cintre/landing/assets/demo-1.webp" alt="" />
+        <img src="file:///home/medulle/cintre/landing/assets/demo-3.webp" alt="" />
+        <img src="file:///home/medulle/cintre/landing/assets/demo-2.webp" alt="" />
+      </div>
+      <span class="cap">✨ Ton pack est prêt&nbsp;!</span>
+      <span class="time">10:41</span>
+    </div>
+  </div>
+  <div class="wa-input">
+    <span class="box">Message</span>
+    <span class="mic">
+      <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 0 0 2 0v-3.08A7 7 0 0 0 19 11z"/></svg>
+    </span>
+  </div>
+</section>
+
+<!-- SLIDE 2 — 3 étapes -->
+<section class="slide s2" role="img" aria-label="slide2">
+  <div class="topbar">
+    <span class="mark">
+      <svg viewBox="18 37 87 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+      cintre
+    </span>
+  </div>
+  <h1>3&nbsp;étapes.</h1>
+  <div class="steps">
+    <div class="step">
+      <span class="no">01</span>
+      <div class="tx"><b>Tu envoies une photo.</b><p>Ajoute un mot si tu veux préciser quelque chose.</p></div>
+    </div>
+    <div class="step">
+      <span class="no">02</span>
+      <div class="tx"><b>cintre met en scène.</b><p>Il isole le produit et invente le décor, fidèle à ton article.</p></div>
+    </div>
+    <div class="step">
+      <span class="no">03</span>
+      <div class="tx"><b>Ton album arrive.</b><p>Un pack de visuels livré dans la conversation, prêt à publier.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3 — CTA -->
+<section class="slide s3" role="img" aria-label="slide3">
+  <span class="mark">
+    <svg viewBox="18 37 87 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+    cintre
+  </span>
+  <h2>Ton shooting,<br>dans un <em>message.</em></h2>
+  <p class="sub">Envoie ta première photo sur WhatsApp.</p>
+  <span class="offer">1er pack offert → lien en bio</span>
+</section>
+
+</body>
+</html>

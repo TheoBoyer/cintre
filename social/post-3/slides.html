@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f2ec; --ink: #14110d; --muted: #857c70; --line: #e2dcd0;
+    --serif: "Fraunces", Georgia, serif; --sans: "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #333; font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .slide { width: 1080px; height: 1350px; background: var(--bg); color: var(--ink);
+           position: relative; overflow: hidden; display: flex; flex-direction: column; }
+
+  .mark { display: flex; align-items: center; gap: 14px; font-family: var(--serif); font-size: 40px; font-weight: 500; letter-spacing: -0.02em; }
+  .mark svg { width: 46px; height: 46px; }
+  h1 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; line-height: 0.96; font-size: 118px; }
+  h1 em { font-weight: 300; font-style: italic; }
+  .lede { font-size: 34px; line-height: 1.5; color: var(--muted); max-width: 24ch; margin-top: 34px; }
+  .pill { position: absolute; left: 22px; bottom: 22px; background: var(--ink); color: var(--bg);
+          font-size: 22px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+          padding: 12px 22px; border-radius: 999px; }
+
+  /* SLIDE 1 — hero plein cadre (le résultat) */
+  .hero { padding: 0; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero .grad-top { position: absolute; top: 0; left: 0; right: 0; height: 150px;
+                    background: linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0)); }
+  .hero .grad-bot { position: absolute; bottom: 0; left: 0; right: 0; height: 320px;
+                    background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0)); }
+  .hero .top { position: absolute; top: 60px; left: 72px; right: 72px; display: flex;
+               align-items: center; justify-content: space-between; color: #fff;
+               text-shadow: 0 1px 12px rgba(0,0,0,0.35); }
+  .hero .top .mark { color: #fff; }
+  .hero .swipe { font-size: 22px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85); }
+  .hero .hook { position: absolute; bottom: 72px; left: 72px; right: 72px; color: #fff; }
+  .hero .hook .q { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 56px; line-height: 1.05; }
+  .hero .hook .sub { font-size: 30px; color: rgba(255,255,255,0.85); margin-top: 16px; }
+
+  /* SLIDE 2 — la révélation */
+  .s2 { padding: 150px 72px 84px; justify-content: space-between; }
+  .topbar { position: absolute; top: 64px; left: 72px; right: 72px; }
+  .polaroid { position: relative; align-self: center; transform: rotate(-3deg);
+              background: #fff; padding: 18px; border-radius: 6px;
+              box-shadow: 0 40px 80px -30px rgba(20,17,13,0.45); }
+  .polaroid img { display: block; width: 540px; height: 700px; object-fit: cover; border-radius: 3px; }
+
+  /* SLIDE 3 — CTA */
+  .s3 { background: var(--ink); color: var(--bg); align-items: center; justify-content: center; text-align: center; padding: 72px; }
+  .s3 .mark { color: var(--bg); font-size: 56px; margin-bottom: 60px; }
+  .s3 .mark svg { width: 64px; height: 64px; }
+  .s3 h2 { font-family: var(--serif); font-weight: 400; font-size: 96px; line-height: 1.0; letter-spacing: -0.02em; }
+  .s3 h2 em { font-weight: 300; font-style: italic; }
+  .s3 .sub { font-size: 34px; color: #c8c0b4; margin-top: 44px; }
+  .s3 .offer { margin-top: 72px; border: 1px solid rgba(245,242,236,0.28); border-radius: 999px;
+               padding: 20px 40px; font-size: 28px; font-weight: 500; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 — le résultat, plein cadre -->
+<section class="slide hero" role="img" aria-label="slide1">
+  <img src="file:///home/medulle/cintre/social/post-3/hero-santorin.png" alt="" />
+  <div class="grad-top"></div>
+  <div class="top">
+    <span class="mark">
+      <svg viewBox="18 37 87 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+      cintre
+    </span>
+    <span class="swipe">swipe →</span>
+  </div>
+</section>
+
+<!-- SLIDE 2 — la révélation -->
+<section class="slide s2" role="img" aria-label="slide2">
+  <div class="topbar">
+    <span class="mark">
+      <svg viewBox="18 37 87 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+      cintre
+    </span>
+  </div>
+  <div>
+    <h1>Au&nbsp;départ&nbsp;?</h1>
+    <p class="lede">Une simple photo, prise sur un portant de boutique.</p>
+  </div>
+  <div class="polaroid">
+    <img src="file:///home/medulle/cintre/archives/generated/robe-slip/source-cintre.jpeg" alt="" />
+    <span class="pill">Ta photo</span>
+  </div>
+</section>
+
+<!-- SLIDE 3 — CTA -->
+<section class="slide s3" role="img" aria-label="slide3">
+  <span class="mark">
+    <svg viewBox="18 37 87 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(-1.5 -3.8)"><path d="M60 56.2 V46.6 c0 -5.44 8.64 -5.44 8.64 0"/><g transform="rotate(-6 60 56.2)"><path d="M60 56.2 L18.4 81.8 L101.6 81.8 Z"/></g></g></svg>
+    cintre
+  </span>
+  <h2>D'un portant<br>à un <em>shooting.</em></h2>
+  <p class="sub">Envoie une photo sur WhatsApp, reçois ton pack.</p>
+  <span class="offer">1er pack offert → lien en bio</span>
+</section>
+
+</body>
+</html>
