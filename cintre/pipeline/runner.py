@@ -37,8 +37,11 @@ def run_job(
     jid = job.id
     store.init_job_dir(jid)
 
-    # 1. La référence est indispensable et irrécupérable si absente.
-    if not store.reference_path(jid).exists():
+    # 1. Il faut de quoi travailler : la référence, ou — si l'anonymisation a
+    #    déjà eu lieu — sa version anonymisée. L'originale est supprimée après
+    #    masquage (minimisation RGPD, cf. plus bas) ; sur reprise, l'anonymisée
+    #    seule suffit et le job ne doit pas être échoué à tort.
+    if not store.reference_path(jid).exists() and not store.anon_path(jid).exists():
         db.finish_job(conn, jid, JobStatus.FAILED, error="reference image missing")
         db.log_event(conn, jid, "error", "reference image missing")
         return JobStatus.FAILED
@@ -59,6 +62,10 @@ def run_job(
             n_faces = anonymize_image(store.reference_path(jid), store.anon_path(jid))
             db.log_event(conn, jid, "anonymize", f"{n_faces} face(s) masked")
             log.info("job %s : %d visage(s) masqué(s)", jid, n_faces)
+        # Minimisation RGPD : l'image anonymisée suffit à tout le reste du
+        # pipeline ; on ne conserve pas l'originale (susceptible de porter un
+        # vrai visage). Idempotent : missing_ok couvre les reprises.
+        store.reference_path(jid).unlink(missing_ok=True)
         ref_for_models = store.anon_path(jid)
 
     # 3. Prompts (skip si déjà produits).
