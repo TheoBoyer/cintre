@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cintre · identité</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f5f2ec;--ink:#14110d;--muted:#857c70;--line:#e2dcd0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui;padding:64px clamp(20px,6vw,90px)}
+  h1{font-family:Fraunces;font-weight:300;font-size:clamp(2.4rem,5vw,3.6rem);letter-spacing:-.02em}
+  .sub{color:var(--muted);margin:.5rem 0 3.5rem;max-width:56ch;line-height:1.5}
+  h2{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--muted);
+     border-top:1px solid var(--line);padding-top:14px;margin:52px 0 20px}
+  .row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .box{background:#fff;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .box.ink{background:var(--ink)}
+  .box img{display:block}
+  .pad{padding:30px}
+  .cap{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
+  .fav{display:flex;gap:22px;align-items:flex-end;flex-wrap:wrap}
+  .lock-h{display:flex;align-items:center;gap:2px}
+  .lock-v{display:flex;flex-direction:column;align-items:center;gap:2px}
+  .swatch{width:130px;height:96px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:flex-end;padding:10px;font-size:11px}
+  .ctx{border-radius:14px;padding:52px;flex:1;min-width:300px}
+  .ctx.cream{background:var(--bg);border:1px solid var(--line)}
+  .ctx.dark{background:var(--ink);color:var(--bg)}
+</style></head><body>
+
+<h1>cintre — identité</h1>
+<p class="sub">Symbole : cintre en trait fin, triangle plat, « balance » −6° (le crochet reste vertical, le triangle penche comme un vêtement suspendu). Palette et typographie de la landing — Fraunces, cream&nbsp;+&nbsp;ink.</p>
+
+<h2>Symbole</h2>
+<div class="row">
+  <div><div class="box" style="width:170px;height:170px"><img src="mark.svg" width="118" alt="cintre"></div><div class="cap">positif · ink sur cream</div></div>
+  <div><div class="box ink" style="width:170px;height:170px"><img src="mark-cream.svg" width="118" alt="cintre"></div><div class="cap">négatif · cream sur ink</div></div>
+  <div><div class="box" style="width:170px;height:170px"><img src="mark.svg" width="150" alt="cintre"></div><div class="cap">plein cadre</div></div>
+</div>
+
+<h2>Favicon &amp; app · tuile</h2>
+<div class="fav">
+  <div><img src="mark-tile.svg" width="120" alt="app"><div class="cap">app / og · 120</div></div>
+  <div><img src="favicon.svg" width="64" alt=""><div class="cap">64</div></div>
+  <div><img src="favicon.svg" width="48" alt=""><div class="cap">48</div></div>
+  <div><img src="favicon.svg" width="32" alt=""><div class="cap">32</div></div>
+  <div><img src="favicon.svg" width="16" alt=""><div class="cap">16</div></div>
+</div>
+
+<h2>Logotype (Fraunces vectorisé, tracés)</h2>
+<div class="row">
+  <div class="box pad" style="min-width:300px"><img src="wordmark.svg" height="58" alt="cintre"></div>
+  <div class="box ink pad" style="min-width:300px"><img src="wordmark-cream.svg" height="58" alt="cintre"></div>
+</div>
+
+<h2>Lockups</h2>
+<div class="row">
+  <div class="box pad" style="min-width:340px"><img src="lockup-h.svg" width="300" alt="cintre"></div>
+  <div class="box pad" style="min-width:220px"><img src="lockup-v.svg" width="170" alt="cintre"></div>
+</div>
+
+<h2>En contexte</h2>
+<div class="row" style="align-items:stretch">
+  <div class="ctx cream">
+    <img src="lockup-h.svg" width="240" alt="cintre">
+    <p style="color:var(--muted);margin-top:22px;font-size:14px">En-tête clair, comme la landing.</p>
+  </div>
+  <div class="ctx dark">
+    <img src="lockup-h-cream.svg" width="240" alt="cintre">
+    <p style="color:#a99f92;margin-top:22px;font-size:14px">Sur fond ink — footer, réseaux, photo de profil.</p>
+  </div>
+</div>
+
+<h2>Palette</h2>
+<div class="row">
+  <div class="swatch" style="background:#14110d;color:#f5f2ec">#14110d · ink</div>
+  <div class="swatch" style="background:#f5f2ec;color:#857c70">#f5f2ec · cream</div>
+  <div class="swatch" style="background:#857c70;color:#fff">#857c70 · muted</div>
+  <div class="swatch" style="background:#e2dcd0;color:#857c70">#e2dcd0 · line</div>
+</div>
+
+</body></html>
